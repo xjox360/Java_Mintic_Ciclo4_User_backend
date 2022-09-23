@@ -77,13 +77,31 @@ public class ControladorPermisosRoles {
         }
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("{id}")
-    public void delete(@PathVariable String id){
+    public String delete(@PathVariable String id){
         PermisosRol permisoRolActual = miRepositorioPermisosRoles.findById(id).orElse(null);
         if(permisoRolActual != null){
             miRepositorioPermisosRoles.delete(permisoRolActual);
+            return "Usuario Eliminado";
+        }else{
+            return "No fue posible eliminar el Usuario";
         }
 
+    }
+
+    @GetMapping("validar-permisos/rol/{id_rol}")
+    public PermisosRol getPermisos(@PathVariable String id_rol,
+                                   @RequestBody Permiso infoPermiso){
+        Permiso actualPermiso = miRepositorioPermiso
+                .getPermiso(infoPermiso.getUrl()
+                        ,infoPermiso.getMetodo().get(0).toString());
+
+        Rol elRol = miRepositorioRol.findById(id_rol).get();
+        if(actualPermiso != null && elRol != null){
+            return miRepositorioPermisosRoles.getPermisoRol(elRol.get_id(), actualPermiso.get_id());
+        }else{
+            return null;
+        }
     }
 }

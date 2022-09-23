@@ -45,12 +45,15 @@ public class ControladorRol {
 
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("{id}")
-    public void delete(@PathVariable String id){
+    public String delete(@PathVariable String id){
         Rol rolActual = miRepositorioRol.findById(id).orElse(null);
         if(rolActual!= null){
             miRepositorioRol.delete(rolActual);
+            return "Usuario Eliminado";
+        }else{
+            return "No fue posible eliminar el Usuario";
         }
     }
 

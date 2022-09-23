@@ -43,12 +43,18 @@ public class ControladorPermiso {
         }
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("{id}")
-    public void  delete(@PathVariable String id){
+    public String  delete(@PathVariable String id){
         Permiso permisoActual = miRepositorioPermiso.findById(id).orElse(null);
         if(permisoActual != null){
             miRepositorioPermiso.delete(permisoActual);
+            return "Usuario Eliminado";
+        }else{
+            return "No fue posible eliminar el Usuario";
         }
     }
+
+
+
 }

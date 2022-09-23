@@ -32,7 +32,8 @@ public class Usuario {
         return this.contrasena;
     }
 
-    public void setContrasena(String convertirSHA256) {
+    public void setContrasena(String contrasena) {
+        this.contrasena = contrasena;
     }
 
     public String getPseudonimo() {

@@ -8,8 +8,11 @@ import seguridad.backend.Ciclo4Grupo2.MainSecurity.modelos.Usuario;
 import seguridad.backend.Ciclo4Grupo2.MainSecurity.repositorios.RepositorioRol;
 import seguridad.backend.Ciclo4Grupo2.MainSecurity.repositorios.RepositorioUsuario;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin
@@ -52,12 +55,16 @@ public class ControladorUsuario {
         }
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("{id}")
-    public void delete(@PathVariable String id){
+    public String
+    delete(@PathVariable String id){
         Usuario usuarioActual = miRepositorioUsuario.findById(id).orElse(null);
         if(usuarioActual != null){
             miRepositorioUsuario.delete(usuarioActual);
+            return "Usuario Eliminado";
+        }else{
+            return "No fue posible eliminar el Usuario";
         }
     }
 
@@ -93,6 +100,22 @@ public class ControladorUsuario {
         }
         return sb.toString();
     }
+
+    @PostMapping("/validar")
+    public Usuario validate(@RequestBody Usuario infoUsuario, final HttpServletResponse response) throws IOException {
+        Usuario usuarioActual = miRepositorioUsuario.getUserByMail((infoUsuario.getCorreo()));
+
+        if(usuarioActual != null && usuarioActual.getContrasena()
+                .equals(convertirSHA256(infoUsuario.getContrasena()))){
+            usuarioActual.setContrasena("");
+            return usuarioActual;
+        }else{
+
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return null;
+        }
+    }
+
 
 }
 
